@@ -12,7 +12,7 @@ function App() {
     'smiley': '😃',
     'pizza': '🍕'
   }
-  const [password, setPassword] = useState();
+  const [password, setPassword] = useState('');
 
   const addEmoji = (e) => {
     setPassword((password + e.emoji))
