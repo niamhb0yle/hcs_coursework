@@ -1,6 +1,8 @@
 import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
+import EmojiPicker from 'emoji-picker-react';
+
 
 function App() {
 
@@ -22,12 +24,9 @@ function App() {
         <p>Emoji password crazy fun vibes!</p>
 
         <div style={{display:'flex', justifyContent:'flex-start', background:'pink', margin:'10px'}}>
-          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>{'🤖'}</button>
-          <button className="emojiButtons" onClick={() => addEmoji('🐶')}>🐶</button>
-          <button className="emojiButtons" onClick={() => addEmoji('🍕')}>🍕</button>
-          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>🤖</button>
-          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>🤖</button>
-          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>🤖</button>
+          <button className="emojiButtons" onClick={() => addEmoji('🐶')}>
+            <EmojiPicker />
+          </button>
         </div>
 
         <input
