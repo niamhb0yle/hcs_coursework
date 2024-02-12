@@ -15,10 +15,11 @@ function App() {
   const [password, setPassword] = useState('');
 
   const addEmoji = (e) => {
-    setPassword((password + e.emoji))
-    console.log(password)
-    console.log(e.names[0])
+    setPassword((password) =>password + e.emoji);
+    console.log(password);
+    console.log(e.names[0]);
     //keywordCheck(password,e.names[0]) //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
+
   }
 
   const keywordCheck = (password, keyWord) => {
@@ -32,11 +33,21 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <p>Emoji password crazy fun vibes!</p>
+        <h2>Sign in using emoji password crazy fun vibes!</h2>
 
-        <div style={{display:'flex', justifyContent:'flex-start', background:'red', margin:'10px'}}>
-          <EmojiPicker onEmojiClick={(emoji) => addEmoji(emoji)}/>
-        </div>
+        <div>
+        <input
+          style={{
+            width: '400px',
+            borderRadius: '30px',
+            height: '30px',
+            border: 'none',
+            padding: '10px',
+            fontSize: '20px',
+            margin: '20px'
+          }}
+        
+        />
 
         <input
           style={{
@@ -46,11 +57,17 @@ function App() {
             border: 'none',
             padding: '10px',
             fontSize: '20px',
+            margin: '20px'
           }}
           value={password}
           //onChange={(e) => addEmoji(e.target.value)}
           onChange={(e) => setPassword(e.target.value)}
         />
+        </div>
+
+        <div style={{display:'flex', justifyContent:'flex-start', background:'red', margin:'10px'}}>
+          <EmojiPicker onEmojiClick={(emoji) => addEmoji(emoji)}/>
+        </div>
 
       </header>
     </div>
