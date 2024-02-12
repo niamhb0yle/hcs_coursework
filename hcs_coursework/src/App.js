@@ -16,6 +16,13 @@ function App() {
   const addEmoji = (emoji) => {
     setPassword(password + emoji)
     console.log(password)
+
+    keywordCheck(password,"cat") //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
+  }
+
+  const keywordCheck = (password, keyWord) => {
+    let emojiInPassword = password.includes(keyWord);
+    console.log(emojiInPassword);
   }
 
   return (
