@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import { useState } from 'react';
 import EmojiPicker from 'emoji-picker-react';
+import { Picker } from 'emoji-mart';
 
 
 function App() {
@@ -13,11 +14,11 @@ function App() {
   }
   const [password, setPassword] = useState();
 
-  const addEmoji = (emoji) => {
-    setPassword(password + emoji)
+  const addEmoji = (e) => {
+    setPassword((password + e.emoji))
     console.log(password)
-
-    keywordCheck(password,"cat") //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
+    console.log(e.names[0])
+    //keywordCheck(password,e.names[0]) //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
   }
 
   const keywordCheck = (password, keyWord) => {
@@ -25,15 +26,16 @@ function App() {
     console.log(emojiInPassword);
   }
 
+
+
+
   return (
     <div className="App">
       <header className="App-header">
         <p>Emoji password crazy fun vibes!</p>
 
-        <div style={{display:'flex', justifyContent:'flex-start', background:'pink', margin:'10px'}}>
-          <button className="emojiButtons" onClick={() => addEmoji('🐶')}>
-            <EmojiPicker />
-          </button>
+        <div style={{display:'flex', justifyContent:'flex-start', background:'red', margin:'10px'}}>
+          <EmojiPicker onEmojiClick={(emoji) => addEmoji(emoji)}/>
         </div>
 
         <input
@@ -46,8 +48,10 @@ function App() {
             fontSize: '20px',
           }}
           value={password}
+          //onChange={(e) => addEmoji(e.target.value)}
           onChange={(e) => setPassword(e.target.value)}
         />
+
       </header>
     </div>
   );
