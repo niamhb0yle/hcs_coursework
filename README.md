@@ -1,1 +1,3 @@
-# hcs_coursework
+# HCS coursework for Lara Sophia Jorr and Niamh
+
+emojis
