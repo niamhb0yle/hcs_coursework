@@ -1,16 +1,47 @@
 import logo from './logo.svg';
 import './App.css';
+import { useState } from 'react';
 
 function App() {
+
+  const emojiDict = {
+    'dog': '🐶',
+    'smiley': '😃',
+    'pizza': '🍕'
+  }
+  const [password, setPassword] = useState();
+
+  const addEmoji = (emoji) => {
+    setPassword(password + emoji)
+    console.log(password)
+  }
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Emoji password crazy fun vibes!
-        </p>
-        <input style={{width:'200px', borderRadius:'30px', height:'30px', border:'none', padding:'10px', fontSize:'20px'}}>
-        </input>
+        <p>Emoji password crazy fun vibes!</p>
+
+        <div style={{display:'flex', justifyContent:'flex-start', background:'pink', margin:'10px'}}>
+          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>{'🤖'}</button>
+          <button className="emojiButtons" onClick={() => addEmoji('🐶')}>🐶</button>
+          <button className="emojiButtons" onClick={() => addEmoji('🍕')}>🍕</button>
+          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>🤖</button>
+          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>🤖</button>
+          <button className="emojiButtons" onClick={() => addEmoji('🤖')}>🤖</button>
+        </div>
+
+        <input
+          style={{
+            width: '400px',
+            borderRadius: '30px',
+            height: '30px',
+            border: 'none',
+            padding: '10px',
+            fontSize: '20px',
+          }}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
       </header>
     </div>
   );
