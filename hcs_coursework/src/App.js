@@ -1,8 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import EmojiPicker from 'emoji-picker-react';
-import { Picker } from 'emoji-mart';
 
 
 function App() {
@@ -19,8 +17,6 @@ function App() {
     const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
     const emojis = pass.match(x) || [];
     const codePoints = Array.from(emojis).map((char) => char.codePointAt(0).toString(16));
-    const unicodeString = `U+${codePoints.join(' U+')}` || [];
-
     const emojisWithNames = emojislist.map((emoji) => {
       const x = emoji[0];
       var i;
