@@ -13,21 +13,50 @@ function App() {
     'pizza': '🍕'
   }
   const [password, setPassword] = useState('');
+  const [passwordChanged, setPasswordChanged] = useState(false);
+  //const [emojiCheck, setEmojiCheck] = useState([]);
+  const [emojislist, setEmojis] = useState([]);
 
-
-  const addEmoji = (e) => {
-    setPassword((password) => password + e.emoji);
-    // console.log(e.names[0]);
-    //keywordCheck(password,e.names[0]) //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
-
+  const findEmojis = (pass) => {
+    const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
+    const emojis = pass.match(x) || [];
+    const codePoints = Array.from(emojis).map((char) => char.codePointAt(0).toString(16));
+    const emojisWithNames = emojislist.map((emoji) => {
+      const x = emoji[0];
+      var i;
+      for (i=0; i <= emojis.length; i++){
+        if (x.emoji == emojis[i]){ 
+          // console.log(x.names);
+          return (x.names[0] + " " + x.names[1]).split(" ");
+        }
+      }
+    });
+    return emojisWithNames;
   };
 
-  useEffect(() => {
-    console.log(password);
-  }, [password]);
 
-  const keywordCheck = (password, keyWord) => {
-    let emojiInPassword = password.includes(keyWord);
+  const passwordChange = (e) => {
+    setPassword((password) => password + e.emoji);
+    setEmojis([...emojislist,  [e]]);
+    setPasswordChanged(true);
+  }
+
+  useEffect(() => {
+    keywordCheck(findEmojis(password));
+    setPasswordChanged(false);
+  }, [passwordChange])
+
+  const keywordCheck = (names) => {
+    let emojiInPassword = false;
+    for (let i = 0; i < names.length; i++) {
+      if (typeof names[i] !== 'undefined') {
+        for (let j = 0; j < i+1; j++ ) {
+            if (password.toLowerCase().includes(names[i][j]) && names[i][j].length > 2) {
+              emojiInPassword = true;
+            }
+        }
+      }
+    }
     console.log(emojiInPassword);
   }
 
@@ -92,7 +121,10 @@ function App() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
-            <EmojiPicker onEmojiClick={(emoji) => addEmoji(emoji)}/>
+            <EmojiPicker onEmojiClick={(emoji) => {
+              passwordChange(emoji);
+              keywordCheck(emoji.names);
+            }}/>
           </div>
         </div>
       </header>
