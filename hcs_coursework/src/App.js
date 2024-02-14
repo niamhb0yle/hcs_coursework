@@ -13,17 +13,36 @@ function App() {
     'pizza': '🍕'
   }
   const [password, setPassword] = useState('');
+  const [emojislist, setEmojis] = useState([]);
 
+  const findEmojis = (pass) => {
+    const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
+    const emojis = pass.match(x) || [];
+    const codePoints = Array.from(emojis).map((char) => char.codePointAt(0).toString(16));
+    const unicodeString = `U+${codePoints.join(' U+')}` || [];
+
+    const emojisWithNames = emojislist.map((emoji) => {
+      const x = emoji[0];
+      var i;
+      for (i=0; i <= emojis.length; i++){
+        if (x.emoji == emojis[i]){ 
+          // console.log(x.names);
+          return x.names[0];
+        }
+      }
+    });
+    return emojisWithNames;
+  };
 
   const addEmoji = (e) => {
     setPassword((password) => password + e.emoji);
-    // console.log(e.names[0]);
-    //keywordCheck(password,e.names[0]) //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
-
+    const result = findEmojis(password);
+    setEmojis([...emojislist,  [e]]);
+    console.log(findEmojis(password));
   };
 
   useEffect(() => {
-    console.log(password);
+    // console.log(password);
   }, [password]);
 
   const keywordCheck = (password, keyWord) => {
