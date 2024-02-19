@@ -41,3 +41,10 @@
   margin:10px;
   font-size: 40px;
 }
+
+.strengthChecker {
+  background:grey;
+  font-size:14px;
+  border-radius: 20px;
+  padding:2vh;
+}

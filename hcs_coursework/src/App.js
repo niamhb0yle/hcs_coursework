@@ -32,16 +32,45 @@ function App() {
     // Perform strength checks here
     const checkStrength = () => {
       let tempStrength = 0;
-      if (password.length > 8) tempStrength += 1;
-      if (/[a-z]/.test(password)) tempStrength += 1;
-      if (/[A-Z]/.test(password)) tempStrength += 1;
-      if (/[1-9]/.test(password)) tempStrength += 1; 
-      if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) tempStrength += 1; 
+      let newStrengths = {...strengths};
+
+      if (password.length > 8) {
+        tempStrength += 1;
+        newStrengths['8chars'] = true;
+      } else {
+        newStrengths['8chars'] = false;
+      };
+      if (/[a-z]/.test(password)) {
+        tempStrength += 1;
+        newStrengths['lowercase'] = true;
+      } else {
+        newStrengths['lowercase'] = false;
+      };
+      if (/[A-Z]/.test(password)) {
+        tempStrength += 1;
+        newStrengths['uppercase'] = true;
+      } else {
+        newStrengths['uppercase'] = false;
+      };
+      if (/[1-9]/.test(password)) {
+        tempStrength += 1;
+        newStrengths['number'] = true;
+      } else {
+        newStrengths['number'] = false;
+      }; 
+      if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
+        tempStrength += 1;
+        newStrengths['symbol'] = true;
+      } else {
+        newStrengths['symbol'] = false;
+      };
+  
+      setStrengths(newStrengths); // Update the state once with all changes
       setStrength(tempStrength);
     };
 
     checkStrength();
-    console.log(password)
+    console.log(strengths)
   }, [password]);
 
   const keywordCheck = (names) => {
@@ -84,6 +113,7 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+
         <h2>Sign in using emoji password crazy fun vibes!</h2>
         <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to the right! :D</div>
 
@@ -134,8 +164,19 @@ function App() {
               Sign Up
             </button>
 
-            <p>Password strength:</p>
-            <p>{strength}</p>
+            <div className='strengthChecker'>
+            <p>To continue, your password must meet the following conditions:</p>
+            <ul>
+              <li>Contains an uppercase character: {strengths.uppercase ? "✓": "✗"}</li>
+              <li>Contains a lowercase character: {strengths.lowercase ? "✓": "✗"}</li>
+              <li>Contains at least 8 characters: {strengths['8chars'] ? "✓": "✗"}</li>
+              <li>Contains a special character: {strengths.symbol ? "✓": "✗"}</li>
+              <li>Contains a number: {strengths.number ? "✓": "✗"}</li>
+              <li>Contains at least one emoji: {strengths.containsEmoji ? "✓": "✗"}</li>
+              <li>Password does not share keywords with emojis: {strengths.emojiKeywords ? "✓": "✗"}</li>
+              <li>First and last characters cannot be emojis: {strengths.emojiPosition ? "✓": "✗"}</li>
+            </ul>
+          </div>
 
           </div>
 
@@ -146,11 +187,7 @@ function App() {
             }}/>
           </div>
 
-          <div style={{background:'grey'}}>
-            <ul>
-              <li></li>
-            </ul>
-          </div>
+          
         </div>
       </header>
     </div>
