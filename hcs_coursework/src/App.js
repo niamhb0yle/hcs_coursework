@@ -7,8 +7,9 @@ function App() {
 
   const [password, setPassword] = useState('');
   const [passwordChanged, setPasswordChanged] = useState(false);
-  //const [emojiCheck, setEmojiCheck] = useState([]);
   const [emojislist, setEmojis] = useState([]);
+  const [strengths, setStrengths] = useState({'8chars':false, 'lowercase': false, 'uppercase': false, 'number': false, 'symbol': false, 'containsEmoji': false, 'emojiKeywords': false, 'emojiPosition': false})
+  const [strength, setStrength] = useState(0);
 
   const findEmojis = (pass) => {
     const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
@@ -27,17 +28,21 @@ function App() {
     return emojisWithNames;
   };
 
-
-  const passwordChange = (e) => {
-    setPassword((password) => password + e.emoji);
-    setEmojis([...emojislist,  [e]]);
-    setPasswordChanged(true);
-  }
-
   useEffect(() => {
-    keywordCheck(findEmojis(password));
-    setPasswordChanged(false);
-  }, [passwordChange])
+    // Perform strength checks here
+    const checkStrength = () => {
+      let tempStrength = 0;
+      if (password.length > 8) tempStrength += 1;
+      if (/[a-z]/.test(password)) tempStrength += 1;
+      if (/[A-Z]/.test(password)) tempStrength += 1;
+      if (/[1-9]/.test(password)) tempStrength += 1; 
+      if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) tempStrength += 1; 
+      setStrength(tempStrength);
+    };
+
+    checkStrength();
+    console.log(password)
+  }, [password]);
 
   const keywordCheck = (names) => {
     let emojiInPassword = false;
@@ -52,16 +57,35 @@ function App() {
     }
     console.log(emojiInPassword);
   }
+  
+
+  const passwordChange = (e) => {
+    setPassword((password) => password + e.emoji);
+    // console.log(e.names[0]);
+    keywordCheck(password,e.names[0]) //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
+
+  };
+
+  const isEmoji = (char) => {
+    const emojiRegex = /\p{Emoji}/u;
+    console.log(emojiRegex.test(char))
+    return emojiRegex.test(char); // if emoji, return true
+  };
 
   const handleButton = () => {
-      console.log('SIGN UP button');
+    for (let i = 0; i < password.length; i++) {
+      console.log(password.charAt(i));
+      if (isEmoji(password.charAt(i))){
+        console.log('here')
+      }
+    }
   };
 
   return (
     <div className="App">
       <header className="App-header">
         <h2>Sign in using emoji password crazy fun vibes!</h2>
-        <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to th right! :D</div>
+        <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to the right! :D</div>
 
         <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
           <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
@@ -110,6 +134,9 @@ function App() {
               Sign Up
             </button>
 
+            <p>Password strength:</p>
+            <p>{strength}</p>
+
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
@@ -117,6 +144,12 @@ function App() {
               passwordChange(emoji);
               keywordCheck(emoji.names);
             }}/>
+          </div>
+
+          <div style={{background:'grey'}}>
+            <ul>
+              <li></li>
+            </ul>
           </div>
         </div>
       </header>
