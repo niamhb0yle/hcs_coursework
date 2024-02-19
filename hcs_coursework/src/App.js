@@ -5,6 +5,7 @@ import EmojiPicker from 'emoji-picker-react';
 
 function App() {
 
+  const [password, setPassword] = useState('');
   const [passwordChanged, setPasswordChanged] = useState(false);
   //const [emojiCheck, setEmojiCheck] = useState([]);
   const [emojislist, setEmojis] = useState([]);
@@ -26,12 +27,9 @@ function App() {
     return emojisWithNames;
   };
 
+
   const passwordChange = (e) => {
     setPassword((password) => password + e.emoji);
-    const result = findEmojis(password);
-    setEmojis([...emojislist,  [e]]);
-    console.log(findEmojis(password));
-  };
     setEmojis([...emojislist,  [e]]);
     setPasswordChanged(true);
   }
@@ -115,7 +113,7 @@ function App() {
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
-            <EmojiPicker onEmojiClick={(emoji) => {
+          <EmojiPicker onEmojiClick={(emoji) => {
               passwordChange(emoji);
               keywordCheck(emoji.names);
             }}/>
@@ -124,6 +122,6 @@ function App() {
       </header>
     </div>
   );
-}
+          }
 
 export default App;
