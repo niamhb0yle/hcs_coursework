@@ -41,3 +41,13 @@
   margin:10px;
   font-size: 40px;
 }
+
+.inputBox {
+  width: 400px;
+  border-radius: 30px;
+  height: 30px;
+  border: none;
+  padding: 10px;
+  font-size: 20px;
+  margin: 20px;
+}

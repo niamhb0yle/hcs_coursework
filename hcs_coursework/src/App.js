@@ -86,104 +86,60 @@ export default function App() {
 
   return (
     <div>
-      <div className='home' style={{display: view === "home" ? 'block' : 'none'}}>
-        <div className="App">
+      <div className="App">
           <header className="App-header">
             <h2>Create Passwords using Emojis</h2>
+      <div className='home' style={{display: view === "home" ? 'block' : 'none'}}>
             <div style={{marginBottom: '40px', marginLeft: '40px', marginRight: '40px'}}>
                 We are running a study to evaluate the impact of using emojis in passwords on the usability and security of the password.
             </div>
             <button className='submitButton' onClick={() => setView('control')} >
               Next
             </button>
-          </header>
-        </div>
       </div>
 
       <div className='control' style={{display: view === "control" ? 'block' : 'none'}}>
-      <div className="App">
-          <header className="App-header">
-            <h2>Sign in using emoji password crazy fun vibes!</h2>
-            <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to th right! :D</div>
-
             <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
               <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
                 <input
-                  placeholder="Enter your username!"
-                  style={{
-                    width: '400px',
-                    borderRadius: '30px',
-                    height: '30px',
-                    border: 'none',
-                    padding: '10px',
-                    fontSize: '20px',
-                    margin: '20px'
-                  }}        
+                  className='inputBox'
+                  placeholder="Enter your username!"     
                 />
 
                 <input
+                  className='inputBox'
                   placeholder="Enter your Password!"
-                  style={{
-                    width: '400px',
-                    borderRadius: '30px',
-                    height: '30px',
-                    border: 'none',
-                    padding: '10px',
-                    fontSize: '20px',
-                    margin: '20px'
-                  }}
                   value={password}
-                  //onChange={(e) => addEmoji(e.target.value)}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <div>
-                  <button className='submitButton' onClick={() => setView('home')} >
-                    Back
-                  </button>
-                  <button className="submitButton" onClick={() => setView('emojiPassword')}>
-                    Next
-                  </button>
-                </div>
               </div>
+                <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px', marginRight: '20px'}}>
+                  Password must have at least 8 characters and at least 1 emoji.
+                </div>
             </div>
-          </header>
-        </div>
+          <div>
+                <button className='submitButton' onClick={() => setView('home')} >
+                  Back
+                </button>
+                <button className="submitButton" onClick={() => setView('emojiPassword')}>
+                  Next
+                </button>
+            </div>
       </div>
 
       <div className='emojiPassword' style={{display: view === "emojiPassword" ? 'block' : 'none'}}>
-      <div className="App">
-          <header className="App-header">
-            <h2>Sign in using emoji password crazy fun vibes!</h2>
-            <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to th right! :D</div>
-
+          <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to th right! :D</div>
             <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
               <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
                 <input
+                  className='inputBox'
                   placeholder="Enter your username!"
-                  style={{
-                    width: '400px',
-                    borderRadius: '30px',
-                    height: '30px',
-                    border: 'none',
-                    padding: '10px',
-                    fontSize: '20px',
-                    margin: '20px'
-                  }}        
                 />
 
                 <input
+                  className='inputBox'
                   placeholder="Enter your Password!"
-                  style={{
-                    width: '400px',
-                    borderRadius: '30px',
-                    height: '30px',
-                    border: 'none',
-                    padding: '10px',
-                    fontSize: '20px',
-                    margin: '20px'
-                  }}
                   value={password}
-                  //onChange={(e) => addEmoji(e.target.value)}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 <div>
@@ -204,9 +160,9 @@ export default function App() {
                 }}/>
               </div>
             </div>
-          </header>
         </div>
-      </div>
+      </header>
+    </div>
   </div>
   );
 }
