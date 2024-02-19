@@ -48,3 +48,21 @@
   border-radius: 20px;
   padding:2vh;
 }
+
+.submitButton {
+  width: fit-content;
+  color: white;
+  background: gray;
+  border-radius: 20px;
+  height: 50px;
+  border: none;
+  padding: 10px;
+  font-size: 20px;
+  margin: 20px;
+  cursor: pointer;
+  align-self: center;
+}
+
+.submitButton:hover {
+  background: darkgrey;
+}

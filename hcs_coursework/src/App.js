@@ -8,8 +8,10 @@ function App() {
   const [password, setPassword] = useState('');
   const [passwordChanged, setPasswordChanged] = useState(false);
   const [emojislist, setEmojis] = useState([]);
-  const [strengths, setStrengths] = useState({'8chars':false, 'lowercase': false, 'uppercase': false, 'number': false, 'symbol': false, 'containsEmoji': false, 'emojiKeywords': false, 'emojiPosition': false})
+  const [strengths, setStrengths] = useState({'Contains at least 8 characters':false, 'Contains a lowercase character': false, 'Contains an uppercase character': false, 'Contains a number': false, 'Contains a special character': false, 'Contains an emoji': false, 'emojiKeywords': false, 'Does not contain emoji at start or end': false})
   const [strength, setStrength] = useState(0);
+  const [passwordList, setPasswordList] = useState([]);
+  const [emojiKeyword, setEmojiKeyword] = useState(false);
 
   const findEmojis = (pass) => {
     const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
@@ -28,49 +30,47 @@ function App() {
     return emojisWithNames;
   };
 
+  const handleChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const onEmojiClick = (emojiObject, event) => {
+    setPassword((prevPassword) => prevPassword + emojiObject.emoji);
+  };
+
+  const addToPassword = (item, type) => {
+    setPasswordList((prev) => [...prev, { type, value: item }]);
+  };
+
   useEffect(() => {
-    // Perform strength checks here
-    const checkStrength = () => {
-      let tempStrength = 0;
-      let newStrengths = {...strengths};
+    const hasEmoji = passwordList.some(item => item.type === "emoji");
+    const startsOrEndsWithEmoji = passwordList.length > 0 && (passwordList[0].type === "emoji" || passwordList[passwordList.length - 1].type === "emoji");
+    
+    console.log("Has Emoji:", hasEmoji);
+    console.log("Valid Position:", !startsOrEndsWithEmoji);
+    // Implement other checks as needed
+  }, [passwordList]);
 
-      if (password.length > 8) {
-        tempStrength += 1;
-        newStrengths['8chars'] = true;
-      } else {
-        newStrengths['8chars'] = false;
-      };
-      if (/[a-z]/.test(password)) {
-        tempStrength += 1;
-        newStrengths['lowercase'] = true;
-      } else {
-        newStrengths['lowercase'] = false;
-      };
-      if (/[A-Z]/.test(password)) {
-        tempStrength += 1;
-        newStrengths['uppercase'] = true;
-      } else {
-        newStrengths['uppercase'] = false;
-      };
-      if (/[1-9]/.test(password)) {
-        tempStrength += 1;
-        newStrengths['number'] = true;
-      } else {
-        newStrengths['number'] = false;
-      }; 
-      if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/.test(password)) {
-        tempStrength += 1;
-        newStrengths['symbol'] = true;
-      } else {
-        newStrengths['symbol'] = false;
-      };
-  
-      setStrengths(newStrengths); // Update the state once with all changes
-      setStrength(tempStrength);
-    };
+  useEffect(() => {
+    const newStrengths = { ...strengths };
+    newStrengths['Contains at least 8 characters'] = password.length >= 8;
+    newStrengths['Contains a lowercase character'] = /[a-z]/.test(password);
+    newStrengths['Contains an uppercase character'] = /[A-Z]/.test(password);
+    newStrengths['Contains a number'] = /[0-9]/.test(password);
+    newStrengths['Contains a special character'] = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password);
 
-    checkStrength();
-    console.log(strengths)
+    const emojiRegex = /[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/;
+    newStrengths['Contains an emoji'] = emojiRegex.test(password);
+    newStrengths['Does not contain emoji at start or end'] = emojiRegex.test(password.charAt(0));
+
+    const passwordSymbols = Array.from(password);
+    const startsWithEmoji = emojiRegex.test(passwordSymbols[0]);
+    const endsWithEmoji = emojiRegex.test(passwordSymbols[passwordSymbols.length - 1]);
+    newStrengths['Does not contain emoji at start or end'] = !startsWithEmoji && !endsWithEmoji;
+
+    //check emoji position
+
+    setStrengths(newStrengths);
   }, [password]);
 
   const keywordCheck = (names) => {
@@ -84,16 +84,20 @@ function App() {
         }
       }
     }
-    console.log(emojiInPassword);
+    setEmojiKeyword(emojiInPassword);
   }
   
 
   const passwordChange = (e) => {
     setPassword((password) => password + e.emoji);
-    // console.log(e.names[0]);
-    keywordCheck(password,e.names[0]) //for i in range of words corresponding to that specific emoji - change "cat" with whatever key word we are looking for
-
+    setEmojis([...emojislist, [e]]);
+    setPasswordChanged(true);
   };
+
+  useEffect(() => {
+    keywordCheck(findEmojis(password));
+    setPasswordChanged(false);
+  }, [passwordChanged]);
 
   const isEmoji = (char) => {
     const emojiRegex = /\p{Emoji}/u;
@@ -144,47 +148,27 @@ function App() {
                 margin: '20px'
               }}
               value={password}
-              //onChange={(e) => addEmoji(e.target.value)}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={handleChange}
             />
-            <button
-              style={{
-                width: '100px',
-                color: 'white',
-                background: 'gray',
-                borderRadius: 'none',
-                height: '50px',
-                border: 'none',
-                padding: '10px',
-                fontSize: '20px',
-                margin: '20px'
-              }}
+            <button className='submitButton'
               onClick={handleButton}
               >
               Sign Up
             </button>
 
             <div className='strengthChecker'>
-            <p>To continue, your password must meet the following conditions:</p>
-            <ul>
-              <li>Contains an uppercase character: {strengths.uppercase ? "✓": "✗"}</li>
-              <li>Contains a lowercase character: {strengths.lowercase ? "✓": "✗"}</li>
-              <li>Contains at least 8 characters: {strengths['8chars'] ? "✓": "✗"}</li>
-              <li>Contains a special character: {strengths.symbol ? "✓": "✗"}</li>
-              <li>Contains a number: {strengths.number ? "✓": "✗"}</li>
-              <li>Contains at least one emoji: {strengths.containsEmoji ? "✓": "✗"}</li>
-              <li>Password does not share keywords with emojis: {strengths.emojiKeywords ? "✓": "✗"}</li>
-              <li>First and last characters cannot be emojis: {strengths.emojiPosition ? "✓": "✗"}</li>
-            </ul>
-          </div>
+              <p>Your password must meet the following conditions:</p>
+              <ul>
+                {Object.entries(strengths).map(([key, value]) => (
+                  <li key={key}>{key}: {value ? "✓" : "✗"}</li>
+                ))}
+              </ul>
+            </div>
 
           </div>
 
           <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
-          <EmojiPicker onEmojiClick={(emoji) => {
-              passwordChange(emoji);
-              keywordCheck(emoji.names);
-            }}/>
+          <EmojiPicker onEmojiClick={onEmojiClick}/>
           </div>
 
           
@@ -192,6 +176,6 @@ function App() {
       </header>
     </div>
   );
-          }
+}
 
 export default App;
