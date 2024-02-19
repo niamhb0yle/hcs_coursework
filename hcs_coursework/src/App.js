@@ -86,62 +86,52 @@ export default function App() {
 
   return (
     <div>
+
       <div className="App">
-          <header className="App-header">
-            <h2>Create Passwords using Emojis</h2>
-      <div className='home' style={{display: view === "home" ? 'block' : 'none'}}>
+        <header className="App-header">
+          <h2>Create Passwords using Emojis</h2>
+
+          <div className='home' style={{display: view === "home" ? 'block' : 'none'}}>
             <div style={{marginBottom: '40px', marginLeft: '40px', marginRight: '40px'}}>
                 We are running a study to evaluate the impact of using emojis in passwords on the usability and security of the password.
             </div>
             <button className='submitButton' onClick={() => setView('control')} >
               Next
             </button>
-      </div>
+          </div>
 
-      <div className='control' style={{display: view === "control" ? 'block' : 'none'}}>
+          <div className='control' style={{display: view === "control" ? 'block' : 'none'}}>
             <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
+              
               <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
-                <input
-                  className='inputBox'
-                  placeholder="Enter your username!"     
-                />
-
-                <input
-                  className='inputBox'
-                  placeholder="Enter your Password!"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <input className='inputBox' placeholder="Enter your username!"/>
+                <input className='inputBox' placeholder="Enter your Password!" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
-                <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px', marginRight: '20px'}}>
-                  Password must have at least 8 characters and at least 1 emoji.
-                </div>
-            </div>
-          <div>
-                <button className='submitButton' onClick={() => setView('home')} >
-                  Back
-                </button>
-                <button className="submitButton" onClick={() => setView('emojiPassword')}>
-                  Next
-                </button>
-            </div>
-      </div>
 
-      <div className='emojiPassword' style={{display: view === "emojiPassword" ? 'block' : 'none'}}>
-          <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to th right! :D</div>
+              <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px', marginRight: '20px'}}>
+                Password must have at least 8 characters and at least 1 emoji.
+              </div>
+
+            </div>
+
+            <div>
+              <button className='submitButton' onClick={() => setView('home')} >
+                Back
+              </button>
+              <button className="submitButton" onClick={() => setView('emojiPassword')}>
+                Next
+              </button>
+            </div>
+
+          </div>
+
+          <div className='emojiPassword' style={{display: view === "emojiPassword" ? 'block' : 'none'}}>
+            <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to the right! :D</div>
             <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
               <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
-                <input
-                  className='inputBox'
-                  placeholder="Enter your username!"
-                />
-
-                <input
-                  className='inputBox'
-                  placeholder="Enter your Password!"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
+                <input className='inputBox' placeholder="Enter your username!"/>
+                <input className='inputBox' placeholder="Enter your Password!" value={password} onChange={(e) => setPassword(e.target.value)} />
+                
                 <div>
                   <button className='submitButton' onClick={() => setView('control')} >
                     Back
@@ -154,15 +144,18 @@ export default function App() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
-              <EmojiPicker onEmojiClick={(emoji) => {
+                <EmojiPicker onEmojiClick={(emoji) => {
                   passwordChange(emoji);
                   keywordCheck(emoji.names);
                 }}/>
               </div>
+
             </div>
-        </div>
-      </header>
+          </div>
+
+        </header>
+      </div>
+      
     </div>
-  </div>
   );
 }
