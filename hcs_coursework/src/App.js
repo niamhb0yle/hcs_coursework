@@ -5,30 +5,7 @@ import EmojiPicker from 'emoji-picker-react';
 
 function App() {
 
-  const emojiDict = {
-    'dog': '🐶',
-    'smiley': '😃',
-    'pizza': '🍕'
-  }
-  const [password, setPassword] = useState('');
-  const [emojislist, setEmojis] = useState([]);
-
-  const findEmojis = (pass) => {
-    const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
-    const emojis = pass.match(x) || [];
-    const codePoints = Array.from(emojis).map((char) => char.codePointAt(0).toString(16));
-    const emojisWithNames = emojislist.map((emoji) => {
-      const x = emoji[0];
-      var i;
-      for (i=0; i <= emojis.length; i++){
-        if (x.emoji == emojis[i]){ 
-          // console.log(x.names);
-          return x.names[0];
-        }
-      }
-    });
-    return emojisWithNames;
-  };  const [passwordChanged, setPasswordChanged] = useState(false);
+  const [passwordChanged, setPasswordChanged] = useState(false);
   //const [emojiCheck, setEmojiCheck] = useState([]);
   const [emojislist, setEmojis] = useState([]);
 
@@ -48,7 +25,6 @@ function App() {
     });
     return emojisWithNames;
   };
-
 
   const passwordChange = (e) => {
     setPassword((password) => password + e.emoji);
@@ -82,7 +58,6 @@ function App() {
   const handleButton = () => {
       console.log('SIGN UP button');
   };
-
 
   return (
     <div className="App">
