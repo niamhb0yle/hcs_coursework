@@ -147,8 +147,8 @@ export default function App() {
                 <input className='inputBox' placeholder="Enter your Password!" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
 
-              <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px', marginRight: '20px'}}>
-                Password must have at least 8 characters and at least 1 emoji.
+              <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
+                <EmojiPicker reactionsDefaultOpen={true} onReactionClick={onEmojiClick} />
               </div>
 
             </div>
