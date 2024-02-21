@@ -52,8 +52,16 @@
   padding: 10px;
   font-size: 20px;
   margin: 20px;
+  cursor: pointer;
+  align-self: center;
 }
 
+.strengthChecker {
+  background:grey;
+  font-size:14px;
+  border-radius: 20px;
+  padding:2vh;
+}
 
 .inputBox {
   width: 400px;
@@ -63,4 +71,9 @@
   padding: 10px;
   font-size: 20px;
   margin: 20px;
+}
+
+
+.submitButton:hover {
+  background: darkgrey;
 }

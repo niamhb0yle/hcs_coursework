@@ -1,41 +1,17 @@
 import './App.css';
-import Home from './Home';
-import ControlPage from './ControlPage';
-import EmojiPasswordPage from './EmojiPasswordPage';
 import React, { useState, useEffect } from 'react';
 import EmojiPicker from 'emoji-picker-react';
-
-// export default function App() {
-//   return (
-//     <Router basename='/hcs_coursework'>
-//         <Route path="/home">
-//           <Home/>
-//         </Route>
-//         <Route path="/control">
-//           <ControlPage/>
-//         </Route>
-//         <Route path="/emojiPassword">
-//           <EmojiPasswordPage/>
-//         </Route>
-//     </Router>
-//   );
-// }
-
-
-
 
 export default function App() {
 
   const [password, setPassword] = useState('');
   const [passwordChanged, setPasswordChanged] = useState(false);
-  //const [emojiCheck, setEmojiCheck] = useState([]);
   const [emojislist, setEmojis] = useState([]);
   const [view, setView] = useState('home');
-
-  // useEffect(() => {
-    
-  // }, [view])
-
+  const [strengths, setStrengths] = useState({'Contains at least 8 characters':false, 'Contains a lowercase character': false, 'Contains an uppercase character': false, 'Contains a number': false, 'Contains a special character': false, 'Contains an emoji': false, 'emojiKeywords': false, 'Does not contain emoji at start or end': false})
+  const [strength, setStrength] = useState(0);
+  const [passwordList, setPasswordList] = useState([]);
+  const [emojiKeywords, setEmojiKeywords] = useState([]);
 
   const findEmojis = (pass) => {
     const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
@@ -54,17 +30,64 @@ export default function App() {
     return emojisWithNames;
   };
 
+  useEffect(() => {
+    const newStrengths = { ...strengths };
+  
+    // Check if any word in the password matches any keyword
+    const doesNotContainKeyword = !emojiKeywords.some(keyword => 
+      password.split(' ').some(word => word.includes(keyword))
+    );
 
-  const passwordChange = (e) => {
-    setPassword((password) => password + e.emoji);
-    setEmojis([...emojislist,  [e]]);
-    setPasswordChanged(true);
-  }
+    newStrengths['emojiKeywords'] = doesNotContainKeyword;
+
+    setStrengths(newStrengths);
+    console.log(doesNotContainKeyword);
+    console.log(strengths['emojiKeywords'])
+  }, [password, emojiKeywords]);
+
+  const handleChange = (e) => {
+    setPassword(e.target.value);
+  };
+
+  const onEmojiClick = (emojiObject, event) => {
+    // flattens all the keywords so it is not an array of arrays, and each word is taken into consideration
+    const newKeywords = emojiObject.names.flatMap(keyword => keyword.split(' '));
+    setEmojiKeywords((prevKeywords) => [...prevKeywords, ...newKeywords]);
+    setPassword((prevPassword) => prevPassword + emojiObject.emoji);
+  };
 
   useEffect(() => {
-    keywordCheck(findEmojis(password));
-    setPasswordChanged(false);
-  }, [passwordChange])
+    const newStrengths = { ...strengths };
+    newStrengths['Contains at least 8 characters'] = password.length >= 8;
+    newStrengths['Contains a lowercase character'] = /[a-z]/.test(password);
+    newStrengths['Contains an uppercase character'] = /[A-Z]/.test(password);
+    newStrengths['Contains a number'] = /[0-9]/.test(password);
+    newStrengths['Contains a special character'] = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]+/.test(password);
+
+    const emojiRegex = /[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/;
+    newStrengths['Contains an emoji'] = emojiRegex.test(password);
+    newStrengths['Does not contain emoji at start or end'] = emojiRegex.test(password.charAt(0));
+
+    const passwordSymbols = Array.from(password);
+    const startsWithEmoji = emojiRegex.test(passwordSymbols[0]);
+    const endsWithEmoji = emojiRegex.test(passwordSymbols[passwordSymbols.length - 1]);
+    newStrengths['Does not contain emoji at start or end'] = !startsWithEmoji && !endsWithEmoji;
+
+    //check emoji position
+  
+    // Check if any word in the password matches any keyword
+    const doesNotContainKeyword = !emojiKeywords.some(keyword => 
+      password.split(' ').some(word => word.includes(keyword))
+    );
+
+    console.log(emojiKeywords);
+    console.log(password.split(' '))
+
+
+    newStrengths['emojiKeywords'] = doesNotContainKeyword;
+
+    setStrengths(newStrengths);
+  }, [password]);
 
   const keywordCheck = (names) => {
     let emojiInPassword = false;
@@ -77,8 +100,24 @@ export default function App() {
         }
       }
     }
-    console.log(emojiInPassword);
   }
+  
+  const passwordChange = (e) => {
+    setPassword((password) => password + e.emoji);
+    setEmojis([...emojislist, [e]]);
+    setPasswordChanged(true);
+  };
+
+  useEffect(() => {
+    keywordCheck(findEmojis(password));
+    setPasswordChanged(false);
+  }, [passwordChanged]);
+
+  const isEmoji = (char) => {
+    const emojiRegex = /\p{Emoji}/u;
+    console.log(emojiRegex.test(char))
+    return emojiRegex.test(char); // if emoji, return true
+  };
 
   const handleButton = () => {
       console.log('SIGN UP button');
@@ -130,24 +169,30 @@ export default function App() {
             <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
               <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
                 <input className='inputBox' placeholder="Enter your username!"/>
-                <input className='inputBox' placeholder="Enter your Password!" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <input className='inputBox' placeholder="Enter your Password!" value={password} onChange={handleChange} />
                 
                 <div>
                   <button className='submitButton' onClick={() => setView('control')} >
                     Back
                   </button>
-                  <button className="submitButton">
+                  <button className="submitButton" onClick={handleButton}>
                     Sign Up
                   </button>
+
+                  <div className='strengthChecker'>
+                    <p>Your password must meet the following conditions:</p>
+                    <ul>
+                      {Object.entries(strengths).map(([key, value]) => (
+                        <li key={key}>{key}: {value ? "✓" : "✗"}</li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
 
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
-                <EmojiPicker onEmojiClick={(emoji) => {
-                  passwordChange(emoji);
-                  keywordCheck(emoji.names);
-                }}/>
+                <EmojiPicker onEmojiClick={onEmojiClick}/>
               </div>
 
             </div>
