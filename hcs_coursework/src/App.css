@@ -52,18 +52,22 @@
   padding: 10px;
   font-size: 20px;
   margin: 20px;
+  margin-top: 50px;
   cursor: pointer;
   align-self: center;
 }
 
 .strengthChecker {
-  background:#53565d;
-  font-size:16px;
+  background:#212b3800;
+  font-size:18px;
   border-radius: 20px;
   padding:1.5vh;
+  margin-top: -20px;
   overflow: auto;
   justify-content: left;
   text-align: left;
+  width:430px;
+  font-weight:500;
 }
 
 .inputBox {
@@ -79,4 +83,26 @@
 
 .submitButton:hover {
   background: darkgrey;
+}
+
+.modal {
+  background-color: #3b4d71;
+  margin-top: 300px;
+  margin-left: 300px;
+  padding: 40px;
+  height: auto;
+  align-self: center;
+  font-size: 15px;
+  color: white;
+  border-radius: 30px;
+}
+
+.closeModalButton {
+  margin-left: 50px;
+  height: 50px;
+  width: 100px;
+  border-radius: 30px;
+  
+  color: white;
+  background-color: #282c34;
 }

@@ -21,7 +21,7 @@ export default function App() {
 
   const [password, setPassword] = useState('');
   const [view, setView] = useState('home');
-  const [strengths, setStrengths] = useState({'Contains at least 8 characters':false, 'Contains a lowercase character': false, 'Contains an uppercase character': false, 'Contains a number': false, 'Contains a special character': false, 'Contains an emoji': false, 'emojiKeywords': false, 'Does not contain emoji at start or end': false})
+  const [strengths, setStrengths] = useState({'Contains at least 8 characters':false, 'Contains a lowercase character': false, 'Contains an uppercase character': false, 'Contains a number': false, 'Contains a special character': false, 'Contains an emoji': false, 'Does not contain a word relating to an emoji': false, 'Does not contain emoji at start or end': false})
   const [strength, setStrength] = useState(0);
   const [submit, setSubmit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,7 +63,7 @@ export default function App() {
     console.log(password.split(' '))
     console.log(containsKeyWord)
 
-    newStrengths['emojiKeywords'] = !containsKeyWord;
+    newStrengths['Does not contain a word relating to an emoji'] = !containsKeyWord;
 
     setStrengths(newStrengths);
 
@@ -111,7 +111,7 @@ export default function App() {
           <h2>Create Passwords using Emojis</h2>
 
           <div className='home' style={{display: view === "home" ? 'block' : 'none'}}>
-            <div style={{marginBottom: '40px', marginLeft: '40px', marginRight: '40px'}}>
+            <div style={{marginBottom: '40px', marginLeft: '300px', marginRight: '300px'}}>
                 We are running a study to evaluate the impact of using emojis in passwords on the usability and security of the password.
             </div>
             <button className='submitButton' onClick={() => setView('control')} >
@@ -120,10 +120,12 @@ export default function App() {
           </div>
 
           <div className='control' style={{display: view === "control" ? 'block' : 'none'}}>
+            <div style={{marginBottom: '40px', marginLeft: '40px', marginRight: '40px'}}>
+                Please enter a password. You can add emojis!
+            </div>
             <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
               
               <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
-                <input className='inputBox' placeholder="Enter your username!"/>
                 <input className='inputBox' placeholder="Enter your Password!" value={password} onChange={(e) => setPassword(e.target.value)} />
               </div>
 
@@ -145,21 +147,36 @@ export default function App() {
           </div>
 
           <div className='emojiPassword' style={{display: view === "emojiPassword" ? 'block' : 'none'}}>
-            <div style={{marginBottom: '40px'}}>To add emojis to your passwords use the emoji picker to the right! :D</div>
+            <div style={{marginBottom: '40px'}}>Please adjust your password according to the security criteria below.</div>
             <div style={{display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between'}}>
-              <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'flex-start'}}>
-                <input className='inputBox' placeholder="Enter your username!"/>
+              <div style={{marginRight: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                
                 <input className='inputBox' placeholder="Enter your Password!" value={password} onChange={handleChange} />
                 
                 <div>
-                  <button className='submitButton' onClick={() => setView('control')} >
-                    Back
-                  </button>
-                  <button className="submitButton" onClick={handleButton}>
-                    Sign Up
-                  </button>
+        
+                  <div className='strengthChecker'>
+                    
+                    <ul style={{'listStyleType': 'none'}}>
+                      {Object.entries(strengths).map(([key, value]) => (
+                        <li style={{alignSelf:'left'}} key={key}>
+                          <p style={{color: value ? 'green' : 'red', display:'inline', fontSize:'18px', fontWeight:'bold', marginLeft: '-20px'}}>
+                            {value ? "✓   " : "✗    "}
+                          </p>
+                          {key}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                    <button className='submitButton' onClick={() => setView('control')} >
+                      Back
+                    </button>
+                    <button className="submitButton" onClick={handleButton}>
+                      Sign Up
+                    </button>
 
                   <Modal
+                    className='modal'
                     isOpen={isModalOpen}
                     onRequestClose={closeModal}
                     contentLabel="Criteria Not Met"
@@ -167,23 +184,15 @@ export default function App() {
                   >
                     {submit ? 
                     <div>
-                      <h1>Your password meets all the required criteria!</h1>
+                      <h1>Your password was created successfully!</h1>
                     </div>
                      : 
                      <div>
-                      <h1>Your password does not meet the required criteria - please try again!</h1>
+                      <h1>Your password does not meet the required criteria, please try again!</h1>
                     </div>}
-                    <button onClick={closeModal}>Close</button>
+                    <button className='closeModalButton' onClick={closeModal}>Close</button>
                   </Modal>
 
-                  <div className='strengthChecker'>
-                    <p>Your password must meet the following conditions:</p>
-                    <ul style={{alignSelf:'left'}}>
-                      {Object.entries(strengths).map(([key, value]) => (
-                        <li  style={{alignSelf:'left'}} key={key}>{key}: <p style={{color: value ? 'green' : 'red', display:'inline', fontSize:'20px', fontWeight:'bold'}}>{value ? "✓" : "✗"}</p></li>
-                      ))}
-                    </ul>
-                  </div>
                 </div>
 
               </div>
