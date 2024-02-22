@@ -115,7 +115,7 @@ export default function App() {
                 We are running a study to evaluate the impact of using emojis in passwords on the usability and security of the password.
             </div>
             <button className='submitButton' onClick={() => setView('control')} >
-              Next
+              Start
             </button>
           </div>
 
