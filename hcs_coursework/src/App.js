@@ -20,58 +20,13 @@ const customStyles = {
 export default function App() {
 
   const [password, setPassword] = useState('');
-  const [passwordChanged, setPasswordChanged] = useState(false);
-  const [emojislist, setEmojis] = useState([]);
   const [view, setView] = useState('home');
   const [strengths, setStrengths] = useState({'Contains at least 8 characters':false, 'Contains a lowercase character': false, 'Contains an uppercase character': false, 'Contains a number': false, 'Contains a special character': false, 'Contains an emoji': false, 'emojiKeywords': false, 'Does not contain emoji at start or end': false})
   const [strength, setStrength] = useState(0);
-  const [passwordList, setPasswordList] = useState([]);
-  const [emojiKeywords, setEmojiKeywords] = useState([]);
   const [submit, setSubmit] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect (() => {
-    // When view changes, all states reset.
-    setPassword('');
-    setPasswordChanged(false);
-    setEmojis([]);
-    setStrengths({'Contains at least 8 characters':false, 'Contains a lowercase character': false, 'Contains an uppercase character': false, 'Contains a number': false, 'Contains a special character': false, 'Contains an emoji': false, 'emojiKeywords': false, 'Does not contain emoji at start or end': false});
-    setStrength(0);
-    setPasswordList([]);
-    setEmojiKeywords([]);
-  }, [view])
-
-  const findEmojis = (pass) => {
-    const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
-    const emojis = pass.match(x) || [];
-    const codePoints = Array.from(emojis).map((char) => char.codePointAt(0).toString(16));
-    const emojisWithNames = emojislist.map((emoji) => {
-      const x = emoji[0];
-      var i;
-      for (i=0; i <= emojis.length; i++){
-        if (x.emoji == emojis[i]){ 
-          // console.log(x.names);
-          return (x.names[0] + " " + x.names[1]).split(" ");
-        }
-      }
-    });
-    return emojisWithNames;
-  };
-
-  useEffect(() => {
-    const newStrengths = { ...strengths };
-  
-    // Check if any word in the password matches any keyword
-    const doesNotContainKeyword = !emojiKeywords.some(keyword => 
-      password.split(' ').some(word => word.includes(keyword))
-    );
-
-    newStrengths['emojiKeywords'] = doesNotContainKeyword;
-
-    setStrengths(newStrengths);
-    console.log(doesNotContainKeyword);
-    console.log(strengths['emojiKeywords'])
-  }, [password, emojiKeywords]);
+  const newMap = new Map();
+  const [emojiObjects, setEmojiObjects] = useState(newMap);
 
   const handleChange = (e) => {
     setPassword(e.target.value);
@@ -80,8 +35,8 @@ export default function App() {
   const onEmojiClick = (emojiObject, event) => {
     // flattens all the keywords so it is not an array of arrays, and each word is taken into consideration
     const newKeywords = emojiObject.names.flatMap(keyword => keyword.split(' '));
-    setEmojiKeywords((prevKeywords) => [...prevKeywords, ...newKeywords]);
     setPassword((prevPassword) => prevPassword + emojiObject.emoji);
+    setEmojiObjects((prevObjects) => prevObjects.set(emojiObject.emoji, newKeywords));
   };
 
   useEffect(() => {
@@ -94,25 +49,21 @@ export default function App() {
 
     const emojiRegex = /[\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF]/;
     newStrengths['Contains an emoji'] = emojiRegex.test(password);
-    newStrengths['Does not contain emoji at start or end'] = emojiRegex.test(password.charAt(0));
 
     const passwordSymbols = Array.from(password);
     const startsWithEmoji = emojiRegex.test(passwordSymbols[0]);
     const endsWithEmoji = emojiRegex.test(passwordSymbols[passwordSymbols.length - 1]);
     newStrengths['Does not contain emoji at start or end'] = !startsWithEmoji && !endsWithEmoji;
 
-    //check emoji position
+    let emojisInPassword = password.match(/[\p{Emoji}\u200d]+/gu);
+    const containsKeyWord = passwordContainsKeyword(emojisInPassword);
   
-    // Check if any word in the password matches any keyword
-    const doesNotContainKeyword = !emojiKeywords.some(keyword => 
-      password.split(' ').some(word => word.includes(keyword))
-    );
-
-    console.log(emojiKeywords);
+    console.log("emojiObjects: ", emojiObjects);    
+    console.log("pw contains emoji: ", emojisInPassword);
     console.log(password.split(' '))
+    console.log(containsKeyWord)
 
-
-    newStrengths['emojiKeywords'] = doesNotContainKeyword;
+    newStrengths['emojiKeywords'] = !containsKeyWord;
 
     setStrengths(newStrengths);
 
@@ -128,35 +79,21 @@ export default function App() {
 
   }, [password]);
 
-  const keywordCheck = (names) => {
-    let emojiInPassword = false;
-    for (let i = 0; i < names.length; i++) {
-      if (typeof names[i] !== 'undefined') {
-        for (let j = 0; j < i+1; j++ ) {
-            if (password.toLowerCase().includes(names[i][j]) && names[i][j].length > 2) {
-              emojiInPassword = true;
-            }
+  const passwordContainsKeyword = (emojisInPassword) => {
+    let containsKeyWord = false;
+    if (emojisInPassword) { 
+      emojisInPassword = emojisInPassword.flatMap((emoji) => [...emoji]); 
+      for (const emoji of emojisInPassword) {
+        if (emojiObjects.has(emoji)) {
+          containsKeyWord = emojiObjects.get(emoji).some(keyword => 
+            password.split(' ').some(word => word.includes(keyword))
+          );
+          if (containsKeyWord) { break; }
         }
       }
     }
+    return containsKeyWord;
   }
-  
-  const passwordChange = (e) => {
-    setPassword((password) => password + e.emoji);
-    setEmojis([...emojislist, [e]]);
-    setPasswordChanged(true);
-  };
-
-  useEffect(() => {
-    keywordCheck(findEmojis(password));
-    setPasswordChanged(false);
-  }, [passwordChanged]);
-
-  const isEmoji = (char) => {
-    const emojiRegex = /\p{Emoji}/u;
-    console.log(emojiRegex.test(char))
-    return emojiRegex.test(char); // if emoji, return true
-  };
 
   const handleButton = () => {
     setIsModalOpen(true);
