@@ -1,6 +1,21 @@
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import EmojiPicker from 'emoji-picker-react';
+import Modal from 'react-modal';
+
+Modal.setAppElement('#root'); 
+
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '35%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+    width: '20vw',
+  },
+};
 
 export default function App() {
 
@@ -12,6 +27,8 @@ export default function App() {
   const [strength, setStrength] = useState(0);
   const [passwordList, setPasswordList] = useState([]);
   const [emojiKeywords, setEmojiKeywords] = useState([]);
+  const [submit, setSubmit] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect (() => {
     // When view changes, all states reset.
@@ -98,6 +115,17 @@ export default function App() {
     newStrengths['emojiKeywords'] = doesNotContainKeyword;
 
     setStrengths(newStrengths);
+
+    let tempSubmit = true;
+
+    for (let key in newStrengths) {
+      if (newStrengths[key] == false) {
+        tempSubmit = false;
+      }
+    }
+
+    setSubmit(tempSubmit);
+
   }, [password]);
 
   const keywordCheck = (names) => {
@@ -131,7 +159,11 @@ export default function App() {
   };
 
   const handleButton = () => {
-      console.log('SIGN UP button');
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -190,11 +222,28 @@ export default function App() {
                     Sign Up
                   </button>
 
+                  <Modal
+                    isOpen={isModalOpen}
+                    onRequestClose={closeModal}
+                    contentLabel="Criteria Not Met"
+                    style={customStyles}
+                  >
+                    {submit ? 
+                    <div>
+                      <h1>Your password meets all the required criteria!</h1>
+                    </div>
+                     : 
+                     <div>
+                      <h1>Your password does not meet the required criteria - please try again!</h1>
+                    </div>}
+                    <button onClick={closeModal}>Close</button>
+                  </Modal>
+
                   <div className='strengthChecker'>
                     <p>Your password must meet the following conditions:</p>
-                    <ul>
+                    <ul style={{alignSelf:'left'}}>
                       {Object.entries(strengths).map(([key, value]) => (
-                        <li key={key}>{key}: {value ? "✓" : "✗"}</li>
+                        <li  style={{alignSelf:'left'}} key={key}>{key}: <p style={{color: value ? 'green' : 'red', display:'inline', fontSize:'20px', fontWeight:'bold'}}>{value ? "✓" : "✗"}</p></li>
                       ))}
                     </ul>
                   </div>

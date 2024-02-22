@@ -57,10 +57,13 @@
 }
 
 .strengthChecker {
-  background:grey;
-  font-size:14px;
+  background:#53565d;
+  font-size:16px;
   border-radius: 20px;
-  padding:2vh;
+  padding:1.5vh;
+  overflow: auto;
+  justify-content: left;
+  text-align: left;
 }
 
 .inputBox {
