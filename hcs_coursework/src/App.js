@@ -13,6 +13,17 @@ export default function App() {
   const [passwordList, setPasswordList] = useState([]);
   const [emojiKeywords, setEmojiKeywords] = useState([]);
 
+  useEffect (() => {
+    // When view changes, all states reset.
+    setPassword('');
+    setPasswordChanged(false);
+    setEmojis([]);
+    setStrengths({'Contains at least 8 characters':false, 'Contains a lowercase character': false, 'Contains an uppercase character': false, 'Contains a number': false, 'Contains a special character': false, 'Contains an emoji': false, 'emojiKeywords': false, 'Does not contain emoji at start or end': false});
+    setStrength(0);
+    setPasswordList([]);
+    setEmojiKeywords([]);
+  }, [view])
+
   const findEmojis = (pass) => {
     const x =/([\u2700-\u27BF]|[\uE000-\uF8FF]|\uD83C[\uDC00-\uDFFF]|\uD83D[\uDC00-\uDFFF]|[\u2011-\u26FF]|\uD83E[\uDD10-\uDDFF])/g;
     const emojis = pass.match(x) || [];
@@ -148,7 +159,7 @@ export default function App() {
               </div>
 
               <div style={{ display: 'flex', justifyContent: 'flex-start', padding: '10px' }}>
-                <EmojiPicker reactionsDefaultOpen={true} onReactionClick={onEmojiClick} />
+                <EmojiPicker reactionsDefaultOpen={true} onEmojiClick={onEmojiClick}/>
               </div>
 
             </div>
