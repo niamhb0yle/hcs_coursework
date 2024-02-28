@@ -86,7 +86,7 @@ export default function App() {
       for (const emoji of emojisInPassword) {
         if (emojiObjects.has(emoji)) {
           containsKeyWord = emojiObjects.get(emoji).some(keyword => 
-            password.split(' ').some(word => word.includes(keyword))
+            password.toLowerCase().split(' ').some(word => word.includes(keyword))
           );
           if (containsKeyWord) { break; }
         }
